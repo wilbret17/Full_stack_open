@@ -3,13 +3,15 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsService from './services/persons'
-
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)  // Declare the error message state
 
   useEffect(() => {
     personsService
@@ -28,6 +30,10 @@ const App = () => {
         .deletePerson(id)
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
+          setNotification(`Deleted ${name}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
         })
         .catch(error => {
           console.error("Error deleting person:", error)
@@ -60,12 +66,23 @@ const App = () => {
           .updatePerson(existingPerson.id, updatedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson));
-            setNewName('');
-            setNewNumber('');
+            setNewName('')
+            setNewNumber('')
+            setNotification(`Updated ${returnedPerson.name}'s number`)
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
           })
           .catch(error => {
-            console.error("Error updating person's number:", error);
-          });
+            if (error.response && error.response.status === 404) {
+              setErrorMessage(`Error: ${newName} has already been removed from the server`)
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 5000)
+            } else {
+              console.error("Error updating person's number:", error)
+            }
+          })
       }
     } else {
       const personObject = {
@@ -76,13 +93,17 @@ const App = () => {
       personsService
         .create(personObject)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson));
-          setNewName('');
-          setNewNumber('');
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          setNotification(`Added ${returnedPerson.name}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
         })
         .catch(error => {
-          console.error("Error adding person:", error);
-        });
+          console.error("Error adding person:", error)
+        })
     }
   }
 
@@ -93,6 +114,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {notification && 
+        <div className="notification">{notification}</div>} {/* Display notification */}
+      {errorMessage && 
+        <div className="error">{errorMessage}</div>} {/* Display error message */}
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm 
@@ -108,4 +133,5 @@ const App = () => {
   )
 }
 
-export default App;
+export default App
+
