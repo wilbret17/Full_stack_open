@@ -11,7 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
   const [notification, setNotification] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)  // Declare the error message state
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personsService
