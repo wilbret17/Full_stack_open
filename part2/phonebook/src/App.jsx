@@ -21,9 +21,14 @@ const App = () => {
       })
       .catch(error => {
         console.error("Error fetching data:", error)
+        setErrorMessage('Failed to fetch persons.')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
   }, [])
 
+  
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       personsService
@@ -37,35 +42,44 @@ const App = () => {
         })
         .catch(error => {
           console.error("Error deleting person:", error)
+          setErrorMessage('Failed to delete person.')
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
 
+  
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
 
+  
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
 
+  
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value)
   }
 
+  
   const addPerson = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const existingPerson = persons.find(person => person.name === newName);
-    
+    const existingPerson = persons.find(person => person.name === newName)
+
     if (existingPerson) {
+      
       if (window.confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`)) {
+        const updatedPerson = { ...existingPerson, number: newNumber }
         
-        const updatedPerson = { ...existingPerson, number: newNumber };
         personsService
           .updatePerson(existingPerson.id, updatedPerson)
           .then(returnedPerson => {
-            setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson));
+            setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson))
             setNewName('')
             setNewNumber('')
             setNotification(`Updated ${returnedPerson.name}'s number`)
@@ -74,21 +88,19 @@ const App = () => {
             }, 5000)
           })
           .catch(error => {
-            if (error.response && error.response.status === 404) {
-              setErrorMessage(`Error: ${newName} has already been removed from the server`)
-              setTimeout(() => {
-                setErrorMessage(null)
-              }, 5000)
-            } else {
-              console.error("Error updating person's number:", error)
-            }
+            console.error("Error updating person's number:", error)
+            setErrorMessage('Failed to update person.')
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
       }
     } else {
+      
       const personObject = {
         name: newName,
         number: newNumber
-      };
+      }
 
       personsService
         .create(personObject)
@@ -103,13 +115,18 @@ const App = () => {
         })
         .catch(error => {
           console.error("Error adding person:", error)
+          setErrorMessage('Failed to add person.')
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
 
+  
   const personsToShow = filter
     ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
-    : persons;
+    : persons
 
   return (
     <div>
@@ -134,4 +151,3 @@ const App = () => {
 }
 
 export default App
-
