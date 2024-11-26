@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'https://fullstack3-gahg.onrender.com/api/persons';
+const baseUrl = 'https://fullstack3-1.onrender.com/api/persons';
 
 const getAll = () => {
   return axios.get(baseUrl).then(response => response.data);
