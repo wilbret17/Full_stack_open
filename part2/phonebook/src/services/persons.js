@@ -5,18 +5,17 @@ const baseUrl = 'https://fullstack3-gahg.onrender.com/api/persons';
 const getAll = () => {
   return axios.get(baseUrl).then(response => response.data);
 }
+
 const create = (newPerson) => {
-  return axios.post(baseUrl, newPerson).then(response => response.data)
+  return axios.post(baseUrl, newPerson).then(response => response.data);
 }
 
 const deletePerson = (id) => {
-  return axios.delete(`${baseUrl}/${id}`)
+  return axios.delete(`${baseUrl}/${id}`);
 }
 
-const updatePerson = (id, updatePerson) => {
-  return axios.put(`${baseUrl}/${id}`, updatePerson)
-    .then(response => response.data)
+const updatePerson = (id, updatedPerson) => {
+  return axios.put(`${baseUrl}/${id}`, updatedPerson).then(response => response.data);
 }
 
-
-export default { getAll, create, deletePerson, updatePerson }
+export default { getAll, create, deletePerson, updatePerson };
