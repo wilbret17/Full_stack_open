@@ -5,11 +5,19 @@ const baseUrl = 'https://fullstack3-1.onrender.com/api/persons';
 const getAll = () => {
   return axios.get(baseUrl).then(response => response.data);
 }
-
 const create = (newPerson) => {
-  return axios.post(baseUrl, newPerson).then(response => response.data);
+  console.log('Creating person:', newPerson);
+  return axios
+    .post(baseUrl, newPerson)
+    .then(response => response.data)
+    .catch(error => {
+      if (error.response && error.response.data) {
+        return Promise.reject(error.response.data.error);
+      } else {
+        return Promise.reject('An error occurred while creating the person');
+      }
+    });
 }
-
 const deletePerson = (id) => {
   return axios.delete(`${baseUrl}/${id}`);
 }
