@@ -69,6 +69,14 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
 
+    if (newName.length < 3) {
+      setErrorMessage('Name must be at least 3 characters long');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+      return;
+    }
+
     const existingPerson = persons.find(person => person.name === newName);
 
     if (existingPerson) {
@@ -113,7 +121,10 @@ const App = () => {
         })
         .catch(error => {
           console.error("Error adding person:", error);
-          setErrorMessage(error.response.data.error);
+          const errorMessage = error.response && error.response.data
+            ? error.response.data.error
+            : 'An unknown error occured';
+          setErrorMessage(errorMessage);
           setTimeout(() => {
             setErrorMessage(null);
           }, 5000);
