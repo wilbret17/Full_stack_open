@@ -1,10 +1,14 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const baseUrl = 'https://fullstack3-1.onrender.com/api/persons';
+const baseUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'http://localhost:3001/api/persons' 
+    : 'https://fullstack3-1.onrender.com/api/persons'; 
 
 const getAll = () => {
   return axios.get(baseUrl).then(response => response.data);
-}
+};
+
 const create = (newPerson) => {
   console.log('Creating person:', newPerson);
   return axios
@@ -17,13 +21,14 @@ const create = (newPerson) => {
         return Promise.reject('An error occurred while creating the person');
       }
     });
-}
+};
+
 const deletePerson = (id) => {
   return axios.delete(`${baseUrl}/${id}`);
-}
+};
 
 const updatePerson = (id, updatedPerson) => {
   return axios.put(`${baseUrl}/${id}`, updatedPerson).then(response => response.data);
-}
+};
 
 export default { getAll, create, deletePerson, updatePerson };
